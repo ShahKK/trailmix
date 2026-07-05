@@ -3,40 +3,76 @@
 A resupply & nutrition planner for thru-hikers — **"LighterPack, but for food and resupply."**
 
 Plan a long-distance hike (AT / PCT / CDT) as a series of resupply **segments**, build each
-segment's food from a nutrition database, optimize for **calories-per-ounce** and cost, and
-generate shopping lists + mail-drop instructions. Works **fully offline** on trail.
+segment's food from a nutrition library, optimize for **calories-per-ounce** and cost, and
+generate shopping lists + mail-drop instructions. **Works fully offline** on trail.
 
-## Status
+![Trailmix](public/pwa-192x192.png)
 
-Early / pre-MVP. See the full spec in **[docs/PRD.md](docs/PRD.md)** — used for goal setting.
+## Features
+
+- **Segment planner** — break a hike into town-to-town legs; auto days-of-food from miles ÷ pace.
+- **Live cal/oz math** — weight, calories, calories/day, cal-per-ounce and cost update as you build.
+- **Smart warnings** — flags any segment that's *undercalorie* or *heavy* (below your cal/oz goal).
+- **Food library** — ~50 seeded hiker staples; add/edit your own. Stored locally.
+- **Shopping lists & mail drops** — grouped, checkable, printable; mail-drop hold-until dates from your pace.
+- **Templates** — fork a ready-made plan (AT Springer→Fontana, PCT Campo→Warner Springs).
+- **Offline-first PWA** — installable; opens with no signal. Plan in town, reference on trail.
+- **Private & portable** — no account, no server. JSON backup export/import + per-hike CSV.
 
 ## Stack
 
-- React 18 + TypeScript + Vite
-- Offline-first PWA (vite-plugin-pwa / Workbox)
-- IndexedDB via Dexie.js (local-first, no server needed for MVP)
-- Tailwind CSS
-- Deploys free on Cloudflare Pages / Netlify
-
-## Why it can run for ~$0
-
-Local-first + static hosting means near-zero infra cost, and offline is also the *correct*
-design for users who plan on wifi but reference on-trail with no signal. See PRD §9.
+React 18 + TypeScript + Vite · IndexedDB via Dexie.js · Tailwind CSS · `vite-plugin-pwa` (Workbox).
+No backend — deploys as static files for ~$0.
 
 ## Getting started
 
-> Project scaffold not created yet. Planned:
-
 ```bash
-npm create vite@latest . -- --template react-ts
 npm install
-npm run dev
+npm run dev        # http://localhost:5173
 ```
 
-## Roadmap
+Other scripts:
 
-- **P0 (MVP):** hikes → segments → food library → live cal/oz totals & warnings → shopping list + mail-drop → offline PWA
-- **P1:** share/fork links, CSV export, optional sync
-- **P2:** community templates, swap-suggestion engine, LighterPack import
+```bash
+npm run build      # production build to dist/
+npm run preview    # serve the production build
+npm run typecheck  # tsc --noEmit
+npm run gen:icons  # regenerate PWA icons/favicon
+```
 
-Full details, personas, data model, and metrics in [docs/PRD.md](docs/PRD.md).
+## Deploy (free)
+
+The build in `dist/` is fully static. Any of these work out of the box (the app uses a relative
+base + `HashRouter`, so it runs at a domain root or a subpath):
+
+- **Netlify / Cloudflare Pages** — build command `npm run build`, publish directory `dist`.
+- **GitHub Pages** — `npm run build`, then publish `dist/` (e.g. via the Pages "deploy from a
+  branch" flow or an Actions workflow).
+
+## How it works
+
+```
+days_of_food    = ceil(segment_miles / miles_per_day)
+calories_needed = days_of_food × daily_calorie_target
+cal_per_oz      = Σ(calories) / Σ(weight_oz)
+status          = OK unless undercalorie or below cal/oz goal
+hold_until      = arrival_date + buffer   (mail drops)
+```
+
+Full product spec, personas, roadmap and data model are in **[docs/PRD.md](docs/PRD.md)**.
+
+## Project structure
+
+```
+src/
+  db/          Dexie schema, seeding, repository (all writes)
+  data/        seed food library + trail templates
+  lib/         segment math, formatters, export/import
+  components/  layout + shared UI
+  features/    hikes / segments / foods / about pages
+scripts/       zero-dep PWA icon generator
+```
+
+## License
+
+MIT — see [LICENSE](LICENSE). Trailmix is a planning aid, not medical or nutritional advice.

@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-trail-50 text-trail-950 antialiased;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition
+      focus:outline-none focus:ring-2 focus:ring-trail-400 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-trail-600 text-white hover:bg-trail-700;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-trail-800 hover:bg-trail-100;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700;
+  }
+  .btn-outline {
+    @apply btn border border-trail-300 bg-white text-trail-800 hover:bg-trail-50;
+  }
+  .card {
+    @apply rounded-xl border border-trail-200 bg-white shadow-sm;
+  }
+  .input {
+    @apply w-full rounded-lg border border-trail-300 bg-white px-3 py-2 text-sm text-trail-950
+      placeholder:text-trail-400 focus:border-trail-500 focus:outline-none focus:ring-2 focus:ring-trail-200;
+  }
+  .label {
+    @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-trail-600;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold;
+  }
+}
+
+/* Print: show only the printable region, hide chrome. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    @apply bg-white;
+  }
+  .print-area {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
