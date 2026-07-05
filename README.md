@@ -13,7 +13,7 @@ generate shopping lists + mail-drop instructions. **Works fully offline** on tra
 - **Segment planner** — break a hike into town-to-town legs; auto days-of-food from miles ÷ pace.
 - **Live cal/oz math** — weight, calories, calories/day, cal-per-ounce and cost update as you build.
 - **Smart warnings** — flags any segment that's *undercalorie* or *heavy* (below your cal/oz goal).
-- **Food library** — ~50 seeded hiker staples; add/edit your own. Stored locally.
+- **Food library** — ~190 seeded hiker staples across 10 categories; add/edit your own. Stored locally.
 - **Shopping lists & mail drops** — grouped, checkable, printable; mail-drop hold-until dates from your pace.
 - **Templates** — fork a ready-made plan (AT Springer→Fontana, PCT Campo→Warner Springs).
 - **Offline-first PWA** — installable; opens with no signal. Plan in town, reference on trail.
@@ -60,6 +60,8 @@ hold_until      = arrival_date + buffer   (mail drops)
 ```
 
 Full product spec, personas, roadmap and data model are in **[docs/PRD.md](docs/PRD.md)**.
+The next-level plan (water planning, macros, motion/animations, share & fork, on-trail mode) is in
+**[docs/PRD-v2.md](docs/PRD-v2.md)**.
 
 ## Project structure
 
