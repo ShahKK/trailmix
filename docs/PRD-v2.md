@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Working name** | Trailmix 2.0 |
-| **Status** | Draft v1 (next goal) |
+| **Status** | ✅ Implemented in v2.0 (this repo) |
 | **Owner** | ShahKK |
 | **Builds on** | [PRD.md](PRD.md) (v1 MVP, shipped) |
 | **Stack** | React 18 + TS + Vite PWA · Framer Motion · dnd-kit · IndexedDB/Dexie |

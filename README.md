@@ -19,9 +19,20 @@ generate shopping lists + mail-drop instructions. **Works fully offline** on tra
 - **Offline-first PWA** — installable; opens with no signal. Plan in town, reference on trail.
 - **Private & portable** — no account, no server. JSON backup export/import + per-hike CSV.
 
+### v2 highlights
+
+- **Water-carry planner** — model dry stretches; your worst carry (≈2.2 lb/L) folds into **total pack weight** (base + food + water).
+- **Total pack weight** — set a base weight; see your true heaviest load per segment with an animated stacked bar.
+- **Macros** — optional protein/fat/carb tracking with a per-day protein goal.
+- **Swap engine** — one-tap suggestions to cut weight at equal calories.
+- **Share & fork** — serverless share links (plan compressed into the URL); a friend forks in one tap.
+- **On-trail mode** — glanceable "calories/weight left", check off food as you eat it.
+- **Motion & polish** — animated numbers, drag-to-reorder segments, swipe-to-delete, toasts with **Undo**, bottom-sheet modals, **dark mode**, and a first-run onboarding — all honoring `prefers-reduced-motion`.
+
 ## Stack
 
 React 18 + TypeScript + Vite · IndexedDB via Dexie.js · Tailwind CSS · `vite-plugin-pwa` (Workbox).
+Motion & interaction: Framer Motion · dnd-kit · sonner (toasts) · lz-string (share links).
 No backend — deploys as static files for ~$0.
 
 ## Getting started

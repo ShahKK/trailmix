@@ -17,6 +17,12 @@ export default function AboutPage() {
           flags any segment that&apos;s undercalorie or too heavy, and generates shopping lists and mail-drop
           instructions with hold-until dates.
         </p>
+        <p>
+          It also plans <strong>water carries</strong> (folded into your total pack weight of base + food + water),
+          tracks optional <strong>macros</strong>, suggests <strong>weight-saving swaps</strong>, and has an{' '}
+          <strong>on-trail mode</strong> to check off food as you eat it. Share a plan with a link and a friend can fork
+          it in one tap — no account required.
+        </p>
 
         <div>
           <h2 className="mb-1 font-bold text-trail-900">Works offline</h2>

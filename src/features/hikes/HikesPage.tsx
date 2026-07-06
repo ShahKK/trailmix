@@ -1,14 +1,19 @@
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { motion } from 'framer-motion'
 import { db, type Hike } from '../../db/db'
-import { createHike, createHikeFromTemplate, deleteHike } from '../../db/repo'
+import { createHike, createHikeFromTemplate, deleteHike, restoreHike, snapshotHike } from '../../db/repo'
 import { templates } from '../../data/templates'
+import { buildSharedHike, encodeSharedHike } from '../../lib/share'
 import { exportAllJSON, importAllJSON } from '../../lib/exportImport'
 import { todayISO } from '../../lib/format'
+import { notifyError, notifySuccess, notifyUndo, notify } from '../../lib/toast'
 import Modal from '../../components/Modal'
 import { Field, NumberInput, Select, TextInput } from '../../components/fields'
 import { EmptyState, Logo, SectionTitle } from '../../components/ui'
+import { ListSkeleton } from '../../components/Skeleton'
+import Onboarding from '../onboarding/Onboarding'
 
 export default function HikesPage() {
   const hikes = useLiveQuery(() => db.hikes.orderBy('createdAt').reverse().toArray(), [])
@@ -20,21 +25,30 @@ export default function HikesPage() {
     if (!confirm('Importing a backup REPLACES all current plans and foods on this device. Continue?')) return
     try {
       await importAllJSON(file)
-      alert('Backup imported.')
+      notifySuccess('Backup imported')
     } catch (e) {
-      alert(`Import failed: ${(e as Error).message}`)
+      notifyError(`Import failed: ${(e as Error).message}`)
     }
+  }
+
+  function onDelete(h: Hike) {
+    void (async () => {
+      const snap = await snapshotHike(h.id!)
+      await deleteHike(h.id!)
+      notifyUndo(`Deleted “${h.name}”`, () => snap && void restoreHike(snap))
+    })()
   }
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-trail-950 px-6 py-8 text-white">
+      <Onboarding />
+      <section className="overflow-hidden rounded-2xl bg-trail-950 px-6 py-8 text-white">
         <div className="flex items-center gap-3">
           <Logo className="h-9 w-9 text-trail-400" />
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight">Plan your resupply</h1>
             <p className="text-sm text-trail-200">
-              Break a thru-hike into segments, dial in calories-per-ounce, and never carry dead weight.
+              Break a thru-hike into segments, dial in calories-per-ounce and water, and never carry dead weight.
             </p>
           </div>
         </div>
@@ -75,6 +89,8 @@ export default function HikesPage() {
           Your hikes
         </SectionTitle>
 
+        {hikes === undefined && <ListSkeleton rows={2} />}
+
         {hikes && hikes.length === 0 && (
           <EmptyState title="No hikes yet">
             Create a hike from scratch, or fork a template like <em>AT — Springer to Fontana</em> to see a full resupply
@@ -83,8 +99,15 @@ export default function HikesPage() {
         )}
 
         <div className="grid gap-3 sm:grid-cols-2">
-          {hikes?.map((h) => (
-            <HikeCard key={h.id} hike={h} onDelete={() => void deleteHike(h.id!)} />
+          {hikes?.map((h, i) => (
+            <motion.div
+              key={h.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: Math.min(i * 0.04, 0.3), duration: 0.25 }}
+            >
+              <HikeCard hike={h} onDelete={() => onDelete(h)} />
+            </motion.div>
           ))}
         </div>
       </section>
@@ -98,20 +121,38 @@ export default function HikesPage() {
 function HikeCard({ hike, onDelete }: { hike: Hike; onDelete: () => void }) {
   const segs = useLiveQuery(() => db.segments.where('hikeId').equals(hike.id!).toArray(), [hike.id])
   const miles = (segs ?? []).reduce((a, s) => a + s.miles, 0)
+
+  async function share() {
+    const sh = await buildSharedHike(hike.id!)
+    if (!sh) return
+    const url = `${window.location.origin}${window.location.pathname}#/shared/${encodeSharedHike(sh)}`
+    try {
+      await navigator.clipboard.writeText(url)
+      notifySuccess('Share link copied')
+    } catch {
+      notify('Copy failed — link too long')
+    }
+  }
+
   return (
-    <div className="card flex flex-col p-4">
+    <div className="card flex h-full flex-col p-4">
       <div className="flex items-start justify-between gap-2">
         <Link to={`/hikes/${hike.id}`} className="min-w-0">
           <h3 className="truncate font-bold text-trail-900 hover:underline">{hike.name}</h3>
           <p className="text-xs text-trail-500">{hike.trail}</p>
         </Link>
-        <button
-          className="btn-ghost px-2 py-1 text-red-600 hover:bg-red-50"
-          onClick={() => confirm(`Delete "${hike.name}"?`) && onDelete()}
-          aria-label="Delete hike"
-        >
-          ✕
-        </button>
+        <div className="flex shrink-0 gap-1">
+          <button className="btn-ghost px-2 py-1 text-trail-500" onClick={() => void share()} aria-label="Share hike">
+            🔗
+          </button>
+          <button
+            className="btn-ghost px-2 py-1 text-red-600 hover:bg-red-50"
+            onClick={onDelete}
+            aria-label="Delete hike"
+          >
+            ✕
+          </button>
+        </div>
       </div>
       <div className="mt-3 flex flex-wrap gap-2 text-xs text-trail-600">
         <span className="chip bg-trail-100 text-trail-700">{segs?.length ?? 0} segments</span>
@@ -135,7 +176,13 @@ function NewHikeModal({ open, onClose }: { open: boolean; onClose: () => void })
 
   async function submit() {
     if (!name.trim()) return
-    const id = await createHike({ name: name.trim(), trail: trail.trim() || 'Custom', startDate, dailyCalTarget, targetCalOz })
+    const id = await createHike({
+      name: name.trim(),
+      trail: trail.trim() || 'Custom',
+      startDate,
+      dailyCalTarget,
+      targetCalOz,
+    })
     onClose()
     setName('')
     setTrail('')

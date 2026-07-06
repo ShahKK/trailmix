@@ -10,6 +10,7 @@
   }
   body {
     @apply bg-trail-50 text-trail-950 antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
@@ -22,27 +23,104 @@
     @apply btn bg-trail-600 text-white hover:bg-trail-700;
   }
   .btn-ghost {
-    @apply btn bg-transparent text-trail-800 hover:bg-trail-100;
+    @apply btn bg-transparent text-trail-800 hover:bg-trail-100 dark:text-trail-100 dark:hover:bg-trail-800/50;
   }
   .btn-danger {
     @apply btn bg-red-600 text-white hover:bg-red-700;
   }
   .btn-outline {
-    @apply btn border border-trail-300 bg-white text-trail-800 hover:bg-trail-50;
+    @apply btn border border-trail-300 bg-white text-trail-800 hover:bg-trail-50
+      dark:border-trail-700 dark:bg-trail-900 dark:text-trail-100 dark:hover:bg-trail-800;
   }
   .card {
-    @apply rounded-xl border border-trail-200 bg-white shadow-sm;
+    @apply rounded-xl border border-trail-200 bg-white shadow-sm dark:border-trail-800 dark:bg-trail-900/70;
   }
   .input {
     @apply w-full rounded-lg border border-trail-300 bg-white px-3 py-2 text-sm text-trail-950
-      placeholder:text-trail-400 focus:border-trail-500 focus:outline-none focus:ring-2 focus:ring-trail-200;
+      placeholder:text-trail-400 focus:border-trail-500 focus:outline-none focus:ring-2 focus:ring-trail-200
+      dark:border-trail-700 dark:bg-trail-950 dark:text-trail-50 dark:placeholder:text-trail-500 dark:focus:ring-trail-800;
   }
   .label {
-    @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-trail-600;
+    @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-trail-600 dark:text-trail-400;
   }
   .chip {
     @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold;
   }
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-trail-100 dark:bg-trail-800;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 1.4s infinite;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ---- Dark theme: remap the trail utilities used directly in JSX --------- */
+.dark body {
+  background-color: #071f17;
+  color: #eafaf1;
+}
+.dark .bg-white {
+  background-color: #0d2c21;
+}
+.dark .bg-trail-50 {
+  background-color: #12362a;
+}
+.dark .bg-trail-100 {
+  background-color: #1b4736;
+}
+.dark .text-trail-950,
+.dark .text-trail-900 {
+  color: #eafaf1;
+}
+.dark .text-trail-800 {
+  color: #cdeedd;
+}
+.dark .text-trail-700 {
+  color: #a9dfc6;
+}
+.dark .text-trail-600 {
+  color: #93d3b6;
+}
+.dark .text-trail-500 {
+  color: #7cc4a3;
+}
+.dark .text-trail-400 {
+  color: #5fa98c;
+}
+.dark .border-trail-200 {
+  border-color: #1c4535;
+}
+.dark .border-trail-100,
+.dark .border-trail-50 {
+  border-color: #163a2d;
+}
+.dark .border-trail-300 {
+  border-color: #245442;
+}
+.dark .divide-trail-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #163a2d;
+}
+.dark .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.12);
+}
+.dark .bg-red-100 {
+  background-color: rgba(239, 68, 68, 0.18);
+}
+.dark .bg-amber-100 {
+  background-color: rgba(245, 158, 11, 0.16);
+}
+.dark .bg-trail-950 {
+  background-color: #04140e;
 }
 
 /* Print: show only the printable region, hide chrome. */
@@ -51,7 +129,7 @@
     display: none !important;
   }
   body {
-    @apply bg-white;
+    @apply bg-white text-black;
   }
   .print-area {
     box-shadow: none !important;

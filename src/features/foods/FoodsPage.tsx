@@ -123,10 +123,22 @@ function FoodForm({ existing, onDone }: { existing: FoodItem | null; onDone: () 
   const [weightOz, setWeight] = useState(existing?.weightOz ?? 1)
   const [calories, setCalories] = useState(existing?.calories ?? 100)
   const [cost, setCost] = useState(existing?.cost ?? 1)
+  const [proteinG, setProtein] = useState(existing?.proteinG ?? 0)
+  const [fatG, setFat] = useState(existing?.fatG ?? 0)
+  const [carbG, setCarb] = useState(existing?.carbG ?? 0)
 
   async function submit() {
     if (!name.trim()) return
-    const data = { name: name.trim(), category, weightOz, calories, cost }
+    const data = {
+      name: name.trim(),
+      category,
+      weightOz,
+      calories,
+      cost,
+      proteinG: proteinG || undefined,
+      fatG: fatG || undefined,
+      carbG: carbG || undefined,
+    }
     if (existing?.id) await updateFood(existing.id, data)
     else await addFood(data)
     onDone()
@@ -157,8 +169,19 @@ function FoodForm({ existing, onDone }: { existing: FoodItem | null; onDone: () 
           <NumberInput value={cost} onChange={(e) => setCost(Number(e.target.value))} min={0} step={0.25} />
         </Field>
       </div>
+      <div className="grid grid-cols-3 gap-3">
+        <Field label="Protein (g)">
+          <NumberInput value={proteinG} onChange={(e) => setProtein(Number(e.target.value))} min={0} step={1} />
+        </Field>
+        <Field label="Fat (g)">
+          <NumberInput value={fatG} onChange={(e) => setFat(Number(e.target.value))} min={0} step={1} />
+        </Field>
+        <Field label="Carbs (g)">
+          <NumberInput value={carbG} onChange={(e) => setCarb(Number(e.target.value))} min={0} step={1} />
+        </Field>
+      </div>
       <p className="rounded bg-trail-50 px-3 py-2 text-xs text-trail-600">
-        {calPerOz(calories, weightOz).toFixed(0)} cal/oz
+        {calPerOz(calories, weightOz).toFixed(0)} cal/oz · macros optional
       </p>
       <div className="flex justify-end gap-2 pt-2">
         <button className="btn-outline" onClick={onDone}>

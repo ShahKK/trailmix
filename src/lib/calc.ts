@@ -1,4 +1,5 @@
-import type { Hike, Segment, FoodItem } from '../db/db'
+import type { Hike, Segment, FoodItem, WaterCarry } from '../db/db'
+import { WATER_OZ_PER_L } from '../db/db'
 
 /** A food entry within a segment, joined with its food details. */
 export interface FoodLine {
@@ -10,6 +11,10 @@ export interface FoodLine {
   calories: number // per unit
   cost: number // per unit
   qty: number
+  eaten?: boolean
+  proteinG?: number
+  fatG?: number
+  carbG?: number
 }
 
 export interface Totals {
@@ -33,6 +38,14 @@ export interface SegmentSummary {
   warnings: string[]
 }
 
+export interface MacroTotals {
+  proteinG: number
+  fatG: number
+  carbG: number
+  itemsWithMacros: number
+  itemsTotal: number
+}
+
 export function daysOfFood(miles: number, miPerDay: number): number {
   if (miPerDay <= 0) return 0
   return Math.ceil(miles / miPerDay)
@@ -47,6 +60,21 @@ export function lineTotals(lines: FoodLine[]): Totals {
     }),
     { weightOz: 0, calories: 0, cost: 0 },
   )
+}
+
+export function macroTotals(lines: FoodLine[]): MacroTotals {
+  let proteinG = 0
+  let fatG = 0
+  let carbG = 0
+  let itemsWithMacros = 0
+  for (const l of lines) {
+    const has = l.proteinG != null || l.fatG != null || l.carbG != null
+    if (has) itemsWithMacros++
+    proteinG += (l.proteinG ?? 0) * l.qty
+    fatG += (l.fatG ?? 0) * l.qty
+    carbG += (l.carbG ?? 0) * l.qty
+  }
+  return { proteinG, fatG, carbG, itemsWithMacros, itemsTotal: lines.length }
 }
 
 export function calPerOz(calories: number, weightOz: number): number {
@@ -94,10 +122,100 @@ export function summarizeSegment(
   }
 }
 
-/**
- * Arrival date (calendar date you reach the town at the END of each segment),
- * accumulating days-of-food from the hike start date.
- */
+// ---------------------------------------------------------------------------
+// Water
+// ---------------------------------------------------------------------------
+
+export function litersToOz(liters: number): number {
+  return liters * WATER_OZ_PER_L
+}
+
+/** The heaviest single water carry drives worst-case pack weight. */
+export function worstCarry(carries: Pick<WaterCarry, 'liters'>[]): number {
+  return carries.reduce((max, c) => Math.max(max, c.liters), 0)
+}
+
+export function estimateCarryLiters(hours: number, rateLPerHr: number, cookLiters = 0): number {
+  return Math.max(0, hours * rateLPerHr + cookLiters)
+}
+
+// ---------------------------------------------------------------------------
+// Total pack weight = base + food + worst water carry
+// ---------------------------------------------------------------------------
+
+export interface PackWeight {
+  baseOz: number
+  foodOz: number
+  waterOz: number
+  totalOz: number
+}
+
+export function packWeight(baseOz: number, foodOz: number, worstCarryLiters: number): PackWeight {
+  const waterOz = litersToOz(worstCarryLiters)
+  return { baseOz, foodOz, waterOz, totalOz: baseOz + foodOz + waterOz }
+}
+
+// ---------------------------------------------------------------------------
+// Swap suggestions — replace an inefficient item with a lighter one at equal
+// (or greater) calories, from the same category.
+// ---------------------------------------------------------------------------
+
+export interface SwapSuggestion {
+  removeSegmentFoodId: number
+  removeName: string
+  addFoodId: number
+  addName: string
+  addQty: number
+  deltaOz: number // negative = lighter
+  deltaCal: number
+  fromCalPerOz: number
+  toCalPerOz: number
+}
+
+export function suggestSwaps(lines: FoodLine[], library: FoodItem[], limit = 4): SwapSuggestion[] {
+  const suggestions: SwapSuggestion[] = []
+  for (const line of lines) {
+    const lineCpo = calPerOz(line.calories, line.weightOz)
+    // best same-category candidate by cal/oz
+    let best: FoodItem | null = null
+    let bestCpo = lineCpo
+    for (const f of library) {
+      if (f.id === line.foodId || f.category !== line.category) continue
+      const cpo = calPerOz(f.calories, f.weightOz)
+      if (cpo > bestCpo * 1.15) {
+        // require a meaningful gain
+        if (!best || cpo > calPerOz(best.calories, best.weightOz)) {
+          best = f
+          bestCpo = cpo
+        }
+      }
+    }
+    if (!best || best.id == null) continue
+    const currentCal = line.calories * line.qty
+    const addQty = Math.max(1, Math.ceil(currentCal / best.calories))
+    const deltaOz = best.weightOz * addQty - line.weightOz * line.qty
+    const deltaCal = best.calories * addQty - currentCal
+    if (deltaOz < -0.3) {
+      suggestions.push({
+        removeSegmentFoodId: line.segmentFoodId,
+        removeName: line.name,
+        addFoodId: best.id,
+        addName: best.name,
+        addQty,
+        deltaOz,
+        deltaCal,
+        fromCalPerOz: lineCpo,
+        toCalPerOz: calPerOz(best.calories, best.weightOz),
+      })
+    }
+  }
+  return suggestions.sort((a, b) => a.deltaOz - b.deltaOz).slice(0, limit)
+}
+
+// ---------------------------------------------------------------------------
+// Scheduling
+// ---------------------------------------------------------------------------
+
 export function segmentArrivalDates(
   startDateISO: string,
   segments: Pick<Segment, 'id' | 'miles' | 'miPerDay'>[],
@@ -115,7 +233,6 @@ export function segmentArrivalDates(
   return map
 }
 
-/** Recommended "hold until" date for a mail drop: arrival + buffer days. */
 export function holdUntilDate(arrival: Date | undefined, bufferDays = 14): Date | undefined {
   if (!arrival) return undefined
   const d = new Date(arrival)
@@ -130,7 +247,6 @@ export function parseISODate(iso: string): Date | null {
   return new Date(y, m - 1, d)
 }
 
-/** Group food lines by category, for a shopping / box list. */
 export function groupByCategory(lines: FoodLine[]): Map<string, FoodLine[]> {
   const map = new Map<string, FoodLine[]>()
   for (const l of lines) {
@@ -141,9 +257,8 @@ export function groupByCategory(lines: FoodLine[]): Map<string, FoodLine[]> {
   return map
 }
 
-/** Build FoodLines by joining segmentFoods with the food table. */
 export function buildFoodLines(
-  segmentFoods: { id?: number; foodId: number; qty: number }[],
+  segmentFoods: { id?: number; foodId: number; qty: number; eaten?: boolean }[],
   foodsById: Map<number, FoodItem>,
 ): FoodLine[] {
   const lines: FoodLine[] = []
@@ -159,6 +274,10 @@ export function buildFoodLines(
       calories: food.calories,
       cost: food.cost,
       qty: sf.qty,
+      eaten: sf.eaten,
+      proteinG: food.proteinG,
+      fatG: food.fatG,
+      carbG: food.carbG,
     })
   }
   return lines.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name))
