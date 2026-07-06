@@ -31,5 +31,9 @@ export default function AnimatedNumber({
     return () => controls.stop()
   }, [value, duration])
 
-  return <span className={className}>{format ? format(display) : Math.round(display).toLocaleString()}</span>
+  return (
+    <span className={`tabular-nums ${className ?? ''}`}>
+      {format ? format(display) : Math.round(display).toLocaleString()}
+    </span>
+  )
 }

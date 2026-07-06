@@ -35,6 +35,15 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,json,woff2}'],
+        // The browser only ever requests the Latin subset for English text
+        // (the CSS uses unicode-range), so keep the offline cache lean by not
+        // precaching the other language subsets.
+        globIgnores: [
+          '**/inter-cyrillic*.woff2',
+          '**/inter-greek*.woff2',
+          '**/inter-vietnamese*.woff2',
+          '**/inter-latin-ext*.woff2',
+        ],
       },
     }),
   ],

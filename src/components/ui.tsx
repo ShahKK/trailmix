@@ -44,7 +44,7 @@ export function StatBox({
   return (
     <div className="rounded-lg bg-trail-50 px-3 py-2">
       <div className="text-[11px] font-semibold uppercase tracking-wide text-trail-500">{label}</div>
-      <div className={`text-lg font-bold leading-tight ${toneCls}`}>{value}</div>
+      <div className={`text-lg font-bold leading-tight tabular-nums ${toneCls}`}>{value}</div>
       {hint && <div className="text-xs text-trail-500">{hint}</div>}
     </div>
   )

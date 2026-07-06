@@ -11,6 +11,8 @@
   body {
     @apply bg-trail-50 text-trail-950 antialiased;
     transition: background-color 0.3s ease, color 0.3s ease;
+    letter-spacing: -0.011em;
+    text-rendering: optimizeLegibility;
   }
 }
 
