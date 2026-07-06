@@ -124,7 +124,7 @@ export default function SegmentDetailPage() {
       {swaps.length > 0 && (
         <section className="card p-4">
           <SectionTitle>Lighten this segment</SectionTitle>
-          <p className="mb-3 text-xs text-trail-500">Same calories, less weight — tap to apply.</p>
+          <p className="mb-3 text-xs text-trail-500">Same calories, less weight. Tap one to swap it in.</p>
           <ul className="space-y-2">
             {swaps.map((s) => (
               <li
@@ -290,7 +290,7 @@ function MacrosCard({
       <SectionTitle>Macros</SectionTitle>
       {macros.itemsWithMacros === 0 ? (
         <p className="text-sm text-trail-500">
-          No macros yet — add protein/fat/carbs to foods in the Food Library to track them here.
+          No macros yet. Add protein, fat, or carbs to your foods in the Food Library and they show up here.
         </p>
       ) : (
         <>
@@ -431,7 +431,7 @@ function FoodBuilder({ segmentId, lines }: { segmentId: number; lines: ReturnTyp
 
       <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-trail-600">In this segment ({lines.length})</h4>
       {lines.length === 0 ? (
-        <p className="text-sm text-trail-400">Nothing yet — search above and tap to add. Swipe a row left to remove.</p>
+        <p className="text-sm text-trail-400">Nothing here yet. Search above and tap to add. Swipe a row left to toss it.</p>
       ) : (
         <ul className="space-y-1">
           <AnimatePresence initial={false}>
@@ -536,7 +536,7 @@ function PackList({
       {isMaildrop && (
         <div className="mb-4 rounded-lg bg-trail-50 p-3 text-sm">
           <div className="font-semibold text-trail-800">Mail to (hold for hiker):</div>
-          <div className="whitespace-pre-wrap text-trail-700">{segment.maildropAddress || '— add an address —'}</div>
+          <div className="whitespace-pre-wrap text-trail-700">{segment.maildropAddress || 'add an address'}</div>
           <div className="mt-2 text-xs text-trail-600">
             Est. arrival <strong>{fmtDate(arrival)}</strong> · ask them to hold until{' '}
             <strong>{fmtDate(holdUntilDate(arrival))}</strong>

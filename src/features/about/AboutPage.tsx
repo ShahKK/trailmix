@@ -11,17 +11,18 @@ export default function AboutPage() {
 
       <div className="card space-y-4 p-5 text-sm leading-relaxed text-trail-700">
         <p>
-          <strong>Trailmix</strong> is a resupply &amp; nutrition planner for thru-hikers — think{' '}
-          <em>“LighterPack, but for food.”</em> Break a long hike into resupply segments, build each segment&apos;s food
-          from the library, and instantly see calories, <strong>calories-per-ounce</strong>, weight, and cost. Trailmix
-          flags any segment that&apos;s undercalorie or too heavy, and generates shopping lists and mail-drop
-          instructions with hold-until dates.
+          Trailmix helps you sort out food for a long hike. If you&apos;ve used LighterPack for gear, this is the same
+          thing for food. You split the hike into resupplies, build each one from your food list, and watch the
+          calories, calories per ounce, weight, and cost add up as you go. When a stretch is short on food or heavier
+          than it should be, it says so. Then it turns your plan into a town shopping list or mail-drop notes with the
+          dates to hold each box.
         </p>
         <p>
-          It also plans <strong>water carries</strong> (folded into your total pack weight of base + food + water),
-          tracks optional <strong>macros</strong>, suggests <strong>weight-saving swaps</strong>, and has an{' '}
-          <strong>on-trail mode</strong> to check off food as you eat it. Share a plan with a link and a friend can fork
-          it in one tap — no account required.
+          It handles water too. Tell it your dry carries and it adds the heaviest one to your pack weight, since water
+          is about 2.2 pounds a liter and that number matters. You can track protein and other macros if you care
+          about them, take swap ideas that shave weight without losing calories, and flip to trail mode to tick off
+          food as you eat it. Want to compare notes with a friend? Send them a link and they can pull the whole plan
+          into their own app. No sign-up anywhere.
         </p>
 
         <div>
@@ -46,11 +47,11 @@ export default function AboutPage() {
         <div>
           <h2 className="mb-1 font-bold text-trail-900">A note on numbers</h2>
           <p>
-            Food values are planning estimates you can edit freely in the{' '}
+            The food numbers are rough estimates and you can change any of them in the{' '}
             <Link to="/foods" className="text-trail-700 underline">
               Food Library
             </Link>
-            . Trailmix is a planning aid, not medical or nutritional advice — hike your own hike.
+            . This is a planning tool, not medical or nutrition advice. Hike your own hike.
           </p>
         </div>
       </div>

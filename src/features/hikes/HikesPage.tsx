@@ -48,7 +48,8 @@ export default function HikesPage() {
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight">Plan your resupply</h1>
             <p className="text-sm text-trail-200">
-              Break a thru-hike into segments, dial in calories-per-ounce and water, and never carry dead weight.
+              Split your hike into resupplies, see how heavy each stretch really is, and stop carrying food you never
+              end up eating.
             </p>
           </div>
         </div>
@@ -93,8 +94,8 @@ export default function HikesPage() {
 
         {hikes && hikes.length === 0 && (
           <EmptyState title="No hikes yet">
-            Create a hike from scratch, or fork a template like <em>AT — Springer to Fontana</em> to see a full resupply
-            plan in seconds.
+            Start one from scratch, or grab a template like <em>AT Springer to Fontana</em> and you&apos;ll have a full
+            resupply plan to play with right away.
           </EmptyState>
         )}
 
@@ -130,7 +131,7 @@ function HikeCard({ hike, onDelete }: { hike: Hike; onDelete: () => void }) {
       await navigator.clipboard.writeText(url)
       notifySuccess('Share link copied')
     } catch {
-      notify('Copy failed — link too long')
+      notify('Could not copy that, the link is really long')
     }
   }
 

@@ -26,7 +26,7 @@ export interface HikeTemplate {
 export const templates: HikeTemplate[] = [
   {
     key: 'at-ga-section',
-    name: 'AT — Springer to Fontana (GA/NC)',
+    name: 'AT: Springer to Fontana (GA/NC)',
     trail: 'Appalachian Trail',
     description:
       'The classic first ~165 miles of a NOBO thru-hike: four resupplies from Springer Mountain through the Nantahalas to Fontana Dam, including one mail drop.',
@@ -38,7 +38,7 @@ export const templates: HikeTemplate[] = [
         miles: 31.7,
         miPerDay: 11,
         resupplyType: 'town',
-        notes: 'Mountain Crossings outfitter — first shakedown. Buy here.',
+        notes: 'Mountain Crossings outfitter, the classic first shakedown. Buy here.',
         foods: [
           { name: 'Instant oatmeal packet', qty: 3 },
           { name: 'Pop-Tarts (2-pack)', qty: 3 },
@@ -81,7 +81,7 @@ export const templates: HikeTemplate[] = [
         miles: 42,
         miPerDay: 11,
         resupplyType: 'town',
-        notes: 'Nantahala Outdoor Center — small store, decent hiker food.',
+        notes: 'Nantahala Outdoor Center. Small store, but the hiker food is decent.',
         foods: [
           { name: 'Instant oatmeal packet', qty: 4 },
           { name: 'Granola (1 cup)', qty: 2 },
@@ -105,7 +105,7 @@ export const templates: HikeTemplate[] = [
         miPerDay: 11,
         resupplyType: 'maildrop',
         maildropAddress:
-          'Fontana Dam Village General Store, 300 Woods Rd, Fontana Dam, NC 28733 — Hold for AT Hiker (ETA on box)',
+          'Fontana Dam Village General Store, 300 Woods Rd, Fontana Dam, NC 28733, hold for AT hiker (put your ETA on the box)',
         notes: 'Tiny store at Fontana; a mail drop keeps you fed before the Smokies.',
         foods: [
           { name: 'Instant oatmeal packet', qty: 3 },
@@ -125,7 +125,7 @@ export const templates: HikeTemplate[] = [
   },
   {
     key: 'pct-socal-section',
-    name: 'PCT — Campo to Warner Springs (SoCal)',
+    name: 'PCT: Campo to Warner Springs (SoCal)',
     trail: 'Pacific Crest Trail',
     description:
       'The first ~110 desert miles of a PCT NOBO hike. Bigger daily miles, higher calories, and a long dry carry into Warner Springs.',
@@ -137,7 +137,7 @@ export const templates: HikeTemplate[] = [
         miles: 41,
         miPerDay: 14,
         resupplyType: 'town',
-        notes: 'Mount Laguna store is small — grab calorie-dense items.',
+        notes: 'Mount Laguna store is small, so grab the calorie-dense stuff.',
         foods: [
           { name: 'Instant oatmeal packet', qty: 3 },
           { name: 'Pop-Tarts (2-pack)', qty: 3 },

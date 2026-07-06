@@ -13,17 +13,17 @@ const STEPS = [
   {
     icon: '🥾',
     title: 'Welcome to Trailmix',
-    body: 'Plan the food — and water — for a long-distance hike. Everything works offline and stays on your device.',
+    body: 'This sorts out the food and water for a long hike. It all works offline and stays on your phone.',
   },
   {
     icon: '⚖️',
-    title: 'Segments, cal/oz & water',
-    body: 'Break your hike into resupply segments. Trailmix dials in calories-per-ounce, folds your worst water carry into total pack weight, and flags anything undercalorie or heavy.',
+    title: 'Segments, calories and water',
+    body: 'Split your hike into resupplies. You get calories per ounce, how much your worst water carry adds to your pack, and a nudge when a stretch is short on food or too heavy.',
   },
   {
     icon: '🔗',
-    title: 'Yours, and shareable',
-    body: 'No account, no server. Export a backup any time, or share a link a friend can fork in one tap.',
+    title: 'Yours to keep and share',
+    body: 'No account, no servers. Back it up whenever you want, or send a friend a link they can copy into their own app in one tap.',
   },
 ]
 

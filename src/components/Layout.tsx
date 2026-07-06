@@ -51,7 +51,7 @@ export default function Layout() {
             </NavLink>
           </nav>
           <span
-            title={online ? 'Online' : 'Offline — your plans still work'}
+            title={online ? 'Online' : 'Offline, but your plans still work'}
             className={`ml-1 hidden h-2 w-2 rounded-full sm:block ${online ? 'bg-trail-400' : 'bg-amber-400'}`}
           />
           <ThemeToggle />
@@ -72,7 +72,7 @@ export default function Layout() {
       </AnimatePresence>
 
       <footer className="no-print border-t border-trail-200 py-6 text-center text-xs text-trail-500">
-        Trailmix — plan your resupply, hike your hike. Works offline. Not medical advice.
+        Trailmix. Plan your resupply, hike your own hike. Works offline. Not medical advice.
       </footer>
     </div>
   )

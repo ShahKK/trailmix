@@ -156,7 +156,7 @@ export function packWeight(baseOz: number, foodOz: number, worstCarryLiters: num
 }
 
 // ---------------------------------------------------------------------------
-// Swap suggestions — replace an inefficient item with a lighter one at equal
+// Swap suggestions: replace an inefficient item with a lighter one at equal
 // (or greater) calories, from the same category.
 // ---------------------------------------------------------------------------
 

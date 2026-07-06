@@ -23,7 +23,7 @@ export function fmtCalPerOz(n: number): string {
 }
 
 export function fmtDate(d: Date | undefined): string {
-  if (!d) return '—'
+  if (!d) return 'TBD'
   return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
 }
 

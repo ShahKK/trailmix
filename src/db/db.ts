@@ -46,7 +46,7 @@ export interface FoodItem {
   calories: number
   cost: number
   source: 'seed' | 'custom'
-  // v2 — optional macros (grams per packed unit)
+  // v2, optional macros (grams per packed unit)
   proteinG?: number
   fatG?: number
   carbG?: number
@@ -57,10 +57,10 @@ export interface SegmentFood {
   segmentId: number
   foodId: number
   qty: number
-  eaten?: boolean // v2 — on-trail check-off
+  eaten?: boolean // v2, on-trail check-off
 }
 
-// v2 — a water carry (a dry stretch you must haul water across)
+// v2, a water carry (a dry stretch you have to haul water across)
 export interface WaterCarry {
   id?: number
   segmentId: number

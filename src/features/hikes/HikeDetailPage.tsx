@@ -124,7 +124,7 @@ export default function HikeDetailPage() {
       await navigator.clipboard.writeText(url)
       notifySuccess('Share link copied to clipboard')
     } catch {
-      notifyError('Could not copy — link is very long')
+      notifyError('Could not copy that, the link is really long')
     }
   }
 
@@ -193,8 +193,8 @@ export default function HikeDetailPage() {
 
         {segments && segments.length === 0 && (
           <EmptyState title="No segments yet">
-            Add a resupply segment — the stretch between two towns. Trailmix works out how many days of food you need and
-            flags anything undercalorie or too heavy.
+            Add a segment, which is just the stretch between two towns. It works out how many days of food you need and
+            tells you when a stretch is short on calories or heavier than it should be.
           </EmptyState>
         )}
 

@@ -215,7 +215,7 @@ export async function applySwap(segmentId: number, s: SwapSuggestion): Promise<v
 }
 
 // ---------------------------------------------------------------------------
-// Undo snapshots (v2) — capture before delete, restore on undo
+// Undo snapshots (v2): capture before delete, restore on undo
 // ---------------------------------------------------------------------------
 
 export interface SegmentSnapshot {
